@@ -1,19 +1,22 @@
 package com.example.dynanote
 
 import android.os.Bundle
+import android.util.Log
+import android.view.GestureDetector
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
-import android.widget.TextView
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    private var mGestureDetector: GestureDetector? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +30,9 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+
+        // 要るらしい
+        mGestureDetector = GestureDetector(this, mOnGestureListener)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -47,26 +53,29 @@ class MainActivity : AppCompatActivity() {
 
     // 画面タッチでのイベント
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        val cord: TextView = findViewById(R.id.mainText)
-        var x: Int
-        var y: Int
+        return mGestureDetector!!.onTouchEvent(event)
+    }
 
-        when (event.getAction()){
-            // タッチ開始
-            MotionEvent.ACTION_DOWN -> {
-                x = event.getX().toInt()
-                y = event.getY().toInt()
-                cord.text = "($x, $y) down"
+    // タッチイベントのリスナー
+    private val mOnGestureListener = object: GestureDetector.SimpleOnGestureListener(){
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+            try{
+                val distanceY = Math.abs(e1!!.y - e2!!.y)
+//                Log.d("distanceY", "dis")
+                val distanceX = Math.abs(e1.x - e2.x)
+
+                mainText.text = "y移動距離: %f  x移動距離: %f".format(distanceY, distanceX)
+            } catch(e:Exception){
+                Log.d("np", "flick error")
             }
 
-            // タッチ終了
-            MotionEvent.ACTION_UP -> {
-                x = event.getX().toInt()
-                y = event.getY().toInt()
-                cord.text = "($x, $y) up"
-            }
+            return super.onFling(e1, e2, velocityX, velocityY)
         }
-        return super.onTouchEvent(event)
+
+        override fun onLongPress(e: MotionEvent?) {
+            mainText.text = "長押し！"
+            super.onLongPress(e)
+        }
     }
 
     // 現在時刻を取得．
