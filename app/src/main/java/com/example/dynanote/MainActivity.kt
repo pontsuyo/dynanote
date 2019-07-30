@@ -23,9 +23,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        // mainTextはcontent_main.xml内に指定したtextのid
-        mainText.text = getToday()
-
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
@@ -61,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
             try{
                 val distanceY = Math.abs(e1!!.y - e2!!.y)
-//                Log.d("distanceY", "dis")
                 val distanceX = Math.abs(e1.x - e2.x)
 
                 mainText.text = "y移動距離: %f  x移動距離: %f".format(distanceY, distanceX)
@@ -76,12 +72,5 @@ class MainActivity : AppCompatActivity() {
             mainText.text = "長押し！"
             super.onLongPress(e)
         }
-    }
-
-    // 現在時刻を取得．
-    fun getToday(): String {
-        val date = Date()
-        val format = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault())
-        return format.format(date)
     }
 }
