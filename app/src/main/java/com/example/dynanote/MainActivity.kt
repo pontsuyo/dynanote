@@ -5,6 +5,8 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.widget.TextView
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -41,6 +43,30 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    // 画面タッチでのイベント
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val cord: TextView = findViewById(R.id.mainText)
+        var x: Int
+        var y: Int
+
+        when (event.getAction()){
+            // タッチ開始
+            MotionEvent.ACTION_DOWN -> {
+                x = event.getX().toInt()
+                y = event.getY().toInt()
+                cord.text = "($x, $y) down"
+            }
+
+            // タッチ終了
+            MotionEvent.ACTION_UP -> {
+                x = event.getX().toInt()
+                y = event.getY().toInt()
+                cord.text = "($x, $y) up"
+            }
+        }
+        return super.onTouchEvent(event)
     }
 
     // 現在時刻を取得．
